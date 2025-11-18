@@ -1,77 +1,116 @@
-<<<<<<< HEAD
-# React + TypeScript + Vite
+# 🏨 Hotel Booking System – Frontend Technical Task
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a fully functional **hotel booking application** built as part of a Frontend Developer technical assessment.  
+It follows all requirements from the provided task document and includes clean architecture, state management, business logic, and responsive UI.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🌐 Live Demo
+👉 _Add your Vercel link here_
 
-## React Compiler
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 Tech Stack
 
-## Expanding the ESLint configuration
+- **React.js (TypeScript)**
+- **Context API + useReducer** (state management)
+- **Tailwind CSS** (responsive & modern UI)
+- **Vite** (bundler & dev server)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## 🎯 Features
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### ✅ Step 1 — Trip Configuration
+Users can configure:
+- Citizenship  
+- Start date  
+- Number of days  
+- Destination country  
+- Board type (FB / HB / NB)
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### ✅ Step 2 — Daily Configuration
+For each day:
+- Select hotel  
+- Select lunch & dinner (depending on board type rules)
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 🍽 Board Type Rules
+| Board Type | Lunch | Dinner |
+|------------|--------|--------|
+| **FB** (Full Board) | ✔ Selectable | ✔ Selectable |
+| **HB** (Half Board) | ✔ Only lunch **OR** dinner | ✔ Only one allowed |
+| **NB** (No Board) | ❌ Disabled | ❌ Disabled |
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Rules are implemented both in **UI** (disabled inputs) and **Reducer** (business logic).
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-=======
-# hotel-booking
->>>>>>> 0bc48d89c59351f94a8c4ec8a8377c5634b671ee
+### ✅ Step 3 — Summary & Pricing
+App displays:
+- Trip configuration summary  
+- Daily selections  
+- Cost breakdown per day  
+- **Grand total** for the whole trip  
+
+Formula:
+Total = Σ (hotel price + selected meals) for each day
+
+---
+
+## 🧩 Project Architecture
+
+src/
+├── components/
+│ ├── TripConfigForm.tsx # Step 1 form
+│ ├── DailyConfigTable.tsx # Step 2 table (per-day selections)
+│ └── SummarySection.tsx # Step 3 summary + pricing
+│
+├── context/
+│ └── BookingContext.tsx # Global state (Context + useReducer)
+│
+├── lib/
+│ ├── data.ts # Countries, hotels, meals, board types
+│ └── pricing.ts # All pricing logic
+│
+├── App.tsx
+└── main.tsx
+
+---
+
+## 🧠 Why Context + Reducer?
+
+I chose **Context API + useReducer** because:
+- The project requires global shared state  
+- Reducer keeps **business logic centralized**, preventing UI components from becoming complicated  
+- It satisfies the "Redux or Context API" requirement  
+- Lighter and cleaner than Redux for this use case  
+
+Reducer contains:
+- Day resizing logic  
+- Board type rules (FB/HB/NB)  
+- Meal exclusivity rule for HB  
+- Safety guard for NB (meals disabled)  
+
+---
+
+## 📊 Pricing Logic
+
+Located in: `src/lib/pricing.ts`
+
+- Computes **hotel + meals** for each day  
+- Generates a full breakdown array  
+- Calculates `grandTotal`  
+- Safe against missing selections  
+
+Example output:
+```json
+{
+  "days": [
+    {
+      "dayIndex": 0,
+      "hotelLabel": "Hilton Istanbul ($120)",
+      "lunchLabel": "Chicken Pilaf ($10)",
+      "dinnerLabel": "Turkish Kebab ($15)",
+      "totalForDay": 145
+    }
+  ],
+  "grandTotal": 145
+}
