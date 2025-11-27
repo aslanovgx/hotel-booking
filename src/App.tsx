@@ -12,7 +12,7 @@ function App() {
       <div className="max-w-4xl mx-auto px-4 space-y-6">
         <header>
           <h1 className="text-2xl font-bold">
-            Hotel Booking – Frontend Technical Task
+            Hotel Booking System
           </h1>
           <p className="text-sm text-slate-600">
             Step 1: Trip configuration · Step 2: Daily configuration · Step 3:
